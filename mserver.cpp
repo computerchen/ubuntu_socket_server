@@ -6,6 +6,8 @@
     if port is been used,you can do something like below:
     ps -ef | grep mserver
     sudo kill -9 xxxxx
+
+    bind failed. Error: Address already in use
     
 */
  
@@ -63,6 +65,7 @@ int main(int argc , char *argv[])
     while( (client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) )
     {
         puts("Connection accepted");
+        printf("new client：IP = %s \n", inet_ntoa(client.sin_addr));
          
         if( pthread_create( &thread_id , NULL ,  connection_handler , (void*) &client_sock) < 0)
         {
@@ -109,9 +112,31 @@ void *connection_handler(void *socket_desc)
     {
         //end of string marker
 		client_message[read_size] = '\0';
-		
-		//Send the message back to client
-        write(sock , client_message , strlen(client_message));
+
+        // 处理请求
+		// strcmp 函数比较两个字符串是否相等，相等返回 0
+		if (0 == strcmp(client_message, "getName"))
+		{
+			char msgBuf[] = "computer chen";
+			send(sock, msgBuf, strlen(msgBuf) + 1, 0);
+		}
+		else if (0 == strcmp(client_message, "getAge"))
+		{
+			char msgBuf[] = "50";
+			send(sock, msgBuf, strlen(msgBuf) + 1, 0);
+		}
+		else
+		{
+			// send 向客户端发送一条数据
+
+			// 连接的 TCP socket 存储远程主机的地址信息。因此，进程不需要为传输数据的函数传入地址参数，可以直接用 send 函数通过 socket 发送数据。
+			// 第二个参数 buf 是写入缓冲区。将数据放到输出缓冲区中，socket 库来决定在将来某一时间发送出去。
+			// len 是传输的字节数量。只要 socket 的输出缓冲区有空间，网络库就可以将数据放到缓冲区中，然后等到缓冲区数据块大小合适时再发送出去。+ 1 包括结尾符。
+			// flags 是对控制数据发送标志进行按位或运算的结果。大多数游戏代码中，该参数取值为 0。
+			// 如果没有判断返回值，数据有可能没有完全发送。
+			//Send the message back to client
+            write(sock , client_message , strlen(client_message));
+		}
 		
 		//clear the message buffer
 		memset(client_message, 0, 2000);
