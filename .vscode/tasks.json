@@ -1,0 +1,35 @@
+{
+    // https://go.microsoft.com/fwlink/?LinkId=733558
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "process",
+            "label": "buildC", //
+            // "command": "/usr/bin/gcc", //执行编译的命令，这里使用gcc也就是之前在远程设备上安装过的
+            "command": "/usr/bin/g++", 
+            //args是gcc后面跟的参数
+            "args": [
+                "-g",
+                "${file}", //需要编译的源文件
+                "-o", 
+                "${fileDirname}/out/${fileBasenameNoExtension}.out",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "presentation": {
+                "echo": true,
+                "focus": false,  
+                "panel": "shared"   // 不同的文件的编译信息共享一个终端面板
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true // 不为true时ctrl shift B就要手动选择了
+            },
+                     
+        }
+    ]
+    }
