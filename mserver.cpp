@@ -22,6 +22,14 @@
     git remote add origin https://github.com/computerchen/ubuntu_cpp_socket_server.git
     git branch -M main
     git push -u origin main
+
+    echo "# ubuntu_socket_server" >> README.md
+    git init
+    git add README.md
+    git commit -m "first commit"
+    git branch -M main
+    git remote add origin https://github.com/computerchen/ubuntu_socket_server.git
+    git push -u origin main
     
 */
  
